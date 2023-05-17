@@ -32,6 +32,12 @@ public class EmployeeController {
         return employeeRepository.findAll();
     }
 
+    @PutMapping("/employees/reload")
+    @CachePut(value = "employees")
+    public List<Employee> reloadEmployees() {
+        return employeeRepository.findAll();
+    }
+
     @GetMapping("/employees/{employeeId}")
     @Cacheable(value = "employees", key = "#employeeId")
     public Employee findEmployeeById(@PathVariable(value = "employeeId") Integer employeeId) {
@@ -56,7 +62,6 @@ public class EmployeeController {
         return updatedEmployee;
 
     }
-
 
     @DeleteMapping("/employees/{id}")
     @CacheEvict(value = "employees", allEntries = true)
