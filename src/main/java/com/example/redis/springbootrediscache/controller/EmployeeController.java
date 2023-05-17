@@ -31,7 +31,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeRepository.findAll());
     }
 
-    @GetMapping("employees/{employeeId}")
+    @GetMapping("/employees/{employeeId}")
     @Cacheable(value = "employees",key = "#employeeId")
     public Employee findEmployeeById(@PathVariable(value = "employeeId") Integer employeeId) {
         System.out.println("Employee fetching from database:: "+employeeId);
@@ -41,7 +41,7 @@ public class EmployeeController {
     }
 
 
-    @PutMapping("employees/{employeeId}")
+    @PutMapping("/employees/{employeeId}")
     @CachePut(value = "employees",key = "#employeeId")
     public Employee updateEmployee(@PathVariable(value = "employeeId") Integer employeeId,
                                                    @RequestBody Employee employeeDetails) {
@@ -54,7 +54,7 @@ public class EmployeeController {
     }
 
 
-    @DeleteMapping("employees/{id}")
+    @DeleteMapping("/employees/{id}")
     @CacheEvict(value = "employees", allEntries = true)
     public void deleteEmployee(@PathVariable(value = "id") Integer employeeId) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
