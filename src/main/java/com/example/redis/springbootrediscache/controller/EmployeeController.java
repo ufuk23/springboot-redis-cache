@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,19 +21,19 @@ public class EmployeeController {
     private EmployeeRepository employeeRepository;
 
     @PostMapping("/employees")
+    @CachePut(value = "employees", key = "#employee.getId()")
     public Employee addEmployee(@RequestBody Employee employee) {
-
         return employeeRepository.save(employee);
     }
 
-
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        return ResponseEntity.ok(employeeRepository.findAll());
+    @Cacheable(value = "employees")
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
     }
 
     @GetMapping("/employees/{employeeId}")
-    @Cacheable(value = "employees",key = "#employeeId")
+    @Cacheable(value = "employees", key = "#employeeId")
     public Employee findEmployeeById(@PathVariable(value = "employeeId") Integer employeeId) {
         System.out.println("Employee fetching from database:: "+employeeId);
         return employeeRepository.findById(employeeId).orElseThrow(
@@ -42,7 +43,7 @@ public class EmployeeController {
 
 
     @PutMapping("/employees/{employeeId}")
-    @CachePut(value = "employees",key = "#employeeId")
+    @CachePut(value = "employees", key = "#employeeId")
     public Employee updateEmployee(@PathVariable(value = "employeeId") Integer employeeId,
                                                    @RequestBody Employee employeeDetails) {
 
