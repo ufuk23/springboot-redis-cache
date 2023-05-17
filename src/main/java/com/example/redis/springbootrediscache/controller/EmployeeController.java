@@ -45,9 +45,12 @@ public class EmployeeController {
     @CachePut(value = "employees",key = "#employeeId")
     public Employee updateEmployee(@PathVariable(value = "employeeId") Integer employeeId,
                                                    @RequestBody Employee employeeDetails) {
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResouceNotFoundException("Employee not found for this id :: " + employeeId));
+
+        // if it does not exist, create employee otherwise update it
+        Employee employee = employeeRepository.findById(employeeId).orElse(new Employee());
+
         employee.setName(employeeDetails.getName());
+
         final Employee updatedEmployee = employeeRepository.save(employee);
         return updatedEmployee;
 
